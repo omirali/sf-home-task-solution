@@ -1,0 +1,56 @@
+version: '3.8'
+networks:
+  backend:
+services:
+  nginx-php74:
+    build: .
+    container_name: nginx-php74
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html/project-app
+#    entrypoint: [ "bash", "-c", ""]
+    tty: true
+    networks:
+      - backend
+  mailhog:
+    build: .config/images/mailhog
+    container_name:  '${MAILHOG_HOST}'
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - backend
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - backend
+
+###> doctrine/doctrine-bundle ###
+  database:
+    image: postgres:${POSTGRES_VERSION:-13}-alpine
+    container_name: postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      # You should definitely change the password in production
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ChangeMe}
+      POSTGRES_USER: ${POSTGRES_USER:-symfony}
+    volumes:
+      - db-data:/var/lib/postgresql/data:rw
+      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # - ./docker/db/data:/var/lib/postgresql/data:rw
+###< doctrine/doctrine-bundle ###
+
+volumes:
+###> doctrine/doctrine-bundle ###
+  db-data:
+###< doctrine/doctrine-bundle ###

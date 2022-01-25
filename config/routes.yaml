@@ -1,3 +1,12 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+template_render:
+    path: templates/render
+    methods: POST
+    controller: App\Controller\TemplateController::render
+check_verification:
+    path: verifications/{id}
+    methods: PUT
+    controller: App\Controller\VerificationController::checkVerification
+create_verification:
+    path: verifications
+    methods: POST
+    controller: App\Controller\VerificationController::createVerification
