@@ -1,5 +1,7 @@
 Solution of test tasks. https://github.com/sunfinancegroup/docs-home-task-hh
-##Start application
+
+### Start application ###
+
 ````
 docker-compose up --build
 ````
